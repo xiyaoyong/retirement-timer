@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>退休倒计时</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #f0f8ff;
+      color: #333;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .container {
+      background: #fff;
+      max-width: 400px;
+      margin: auto;
+      padding: 30px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    input, select, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+      width: 100%;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    #countdown {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>退休倒计时</h1>
+    <label for="birthdate">出生年月：</label>
+    <input type="month" id="birthdate">
+    <label for="retireAge">退休年龄：</label>
+    <select id="retireAge">
+      <script>
+        for (let i = 60; i <= 70; i++) {
+          document.write(`<option value="${i}" ${i === 65 ? 'selected' : ''}>${i}岁</option>`);
+        }
+      </script>
+    </select>
+    <button onclick="startCountdown()">开始计算</button>
+    <div id="retireDateDisplay"></div>
+    <div id="countdown"></div>
+  </div>
+
+  <script>
+    let countdownTimer;
+    function startCountdown() {
+      const birthInput = document.getElementById("birthdate").value;
+      const retireAge = parseInt(document.getElementById("retireAge").value);
+      if (!birthInput) {
+        alert("请输入出生年月！");
+        return;
+      }
+      if (countdownTimer) clearInterval(countdownTimer);
+      const birthDate = new Date(birthInput);
+      const retireDate = new Date(birthDate.getFullYear() + retireAge, birthDate.getMonth(), 1);
+      const year = retireDate.getFullYear();
+      const month = (retireDate.getMonth() + 1).toString().padStart(2, '0');
+      document.getElementById("retireDateDisplay").innerText = `预计退休时间：${year}年${month}月`;
+      countdownTimer = setInterval(() => {
+        const now = new Date();
+        const diff = retireDate - now;
+        if (diff <= 0) {
+          document.getElementById("countdown").innerText = "您已到达退休年龄！";
+          clearInterval(countdownTimer);
+          return;
+        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        document.getElementById("countdown").innerText =
+          `距离退休还有：${days} 天 ${hours} 小时 ${minutes} 分钟 ${seconds} 秒`;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
